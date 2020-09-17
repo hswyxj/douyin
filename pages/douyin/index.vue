@@ -2,100 +2,56 @@
 	<view class="page">
 		<swiper class="swiper" :circular="circular" :vertical="true" @change="onSwiperChange">
 			<swiper-item v-for="(item,index) in videoList" :key="item.id">
-				<video @click="videoplay(index)" class="video" :id="item.id" :ref="item.id" :src="item.src" :controls="false" 
-				 :loop="true"
-				 :show-center-play-btn="false" 
-				 preload="auto" 
-			   object-fit='fill' 
-				 x5-playsinline="" 
-			   playsinline="true"
-				 webkit-playsinline="true" 
-				 x-webkit-airplay="allow"
-				 x5-video-player-type="h5" 
-				 x5-video-player-fullscreen=""
-				 x5-video-orientation="portraint">
-				 <cover-image :id="item.id+'img'" :src="item.img" class="video-image"></cover-image>
-				 <cover-view class="video-love" @click="love(item)">
-				 	<uni-icons type="heart-filled" :color="isactive==true?'#f44336':'#ffffff'" size="55" />
-				 	<view class="video-num">{{item.love_num}}</view>
-				 </cover-view>
-				 <cover-view class="video-comm" @click="comm">
-				 	<uni-icons type="chat-filled" color="#ffffff" size="50" />
-				 	<view class="video-num">{{item.comm_num}}</view>
-				 </cover-view>
-				 <cover-view class="video-redo" @click="redo">
-				 	<uni-icons type="redo-filled" color="#ffffff" size="50" />
-				 	<view class="video-num">{{item.redo_num}}</view>
-				 </cover-view>
-				</video>	
+				<video @click="videoplay(index)" class="video" :id="item.id" :ref="item.id" 
+				:src="item.video_src"
+				:controls="false"
+				:loop="true" 
+				:show-center-play-btn="false" 
+				preload="auto" 
+				object-fit='fill' 
+				x5-playsinline="" 
+				playsinline="true"
+				webkit-playsinline="true" 
+				x-webkit-airplay="allow" 
+				x5-video-player-type="h5" 
+				x5-video-player-fullscreen=""
+				x5-video-orientation="portraint">
+					<cover-image :id="item.id+'img'" :src="item.avatar_img" class="video-image"></cover-image>
+					<cover-view class="video-love" @click="love(item)">
+						<uni-icons type="heart-filled" :color="isactive==true?'#f44336':'#ffffff'" size="55" />
+						<view class="video-num">{{item.love_num}}</view>
+					</cover-view>
+					<cover-view class="video-comm" @click="comm">
+						<uni-icons type="chat-filled" color="#ffffff" size="50" />
+						<view class="video-num">{{item.comm_num}}</view>
+					</cover-view>
+					<cover-view class="video-redo" @click="redo">
+						<uni-icons type="redo-filled" color="#ffffff" size="50" />
+						<view class="video-num">{{item.redo_num}}</view>
+					</cover-view>
+				</video>
 			</swiper-item>
 		</swiper>
 	</view>
 </template>
 <script>
-	const videoData = [{
-			src: 'https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hellouniapp/hello-nvue-swiper-vertical-01.mp4'
-		},
-		{
-			src: 'https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hellouniapp/hello-nvue-swiper-vertical-02.mp4'
-		},
-		{
-			src: 'https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hellouniapp/hello-nvue-swiper-vertical-03.mp4'
-		},
-		{
-			src: 'https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hellouniapp/hello-nvue-swiper-vertical-01.mp4'
-		},
-		{
-			src: 'https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hellouniapp/hello-nvue-swiper-vertical-02.mp4'
-		},
-		{
-			src: 'https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hellouniapp/hello-nvue-swiper-vertical-03.mp4'
-		}
-	];
-
 	export default {
 		data() {
 			return {
 				isactive: false,
 				circular: true,
-				videoList: [{
-						id: "video0",
-						src: "https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hellouniapp/hello-nvue-swiper-vertical-01.mp4",
-						img: "/static/head.jpg",
-						love_num: 101,
-						comm_num: 1431,
-						redo_num: 1001,
-					},
-					{
-						id: "video1",
-						src: "https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hellouniapp/hello-nvue-swiper-vertical-01.mp4",
-						img: "/static/head.jpg",
-						love_num: 1100,
-						comm_num: 1132,
-						redo_num: 1002,
-					},
-					{
-						id: "video2",
-						src: "https://img.cdn.aliyun.dcloud.net.cn/guide/uniapp/hellouniapp/hello-nvue-swiper-vertical-01.mp4",
-						img: "/static/head.jpg",
-						love_num: 3100,
-						comm_num: 1233,
-						redo_num: 1003,
-					}
-				],
+				videoList: [],
 				videoDataList: []
 			}
 		},
 		onLoad(e) {},
 		onReady() {
-			this.init();
-			this.getData();
+			this.getVideoData();
 		},
 		methods: {
 			init() {
 				this._videoIndex = 0;
 				this._videoContextList = [];
-				console.log(this)
 				for (var i = 0; i < this.videoList.length; i++) {
 					this._videoContextList.push(uni.createVideoContext('video' + i, this));
 				}
@@ -108,11 +64,28 @@
 					this._videoContextList[index].play() :
 					this._videoContextList[index].pause()
 			},
-			getData(e) {
-				this.videoDataList = videoData;
-				setTimeout(() => {
-					this.updateVideo(true);
-				}, 200)
+			getVideoData() {
+				uni.showLoading({
+					title: '加载中...'
+				})
+				uniCloud.callFunction({
+					name: 'get'
+				}).then((res) => {
+					uni.hideLoading()
+					this.videoDataList = res.result.data;
+					this.videoList = res.result.data;
+					this.init()
+					setTimeout(() => {
+						this.updateVideo(true);
+					}, 200)
+				}).catch((err) => {
+					uni.hideLoading()
+					uni.showModal({
+						content: `${err.message}`,
+						showCancel: false
+					})
+					console.error(err)
+				})
 			},
 			onSwiperChange(e) {
 				this.isactive = false
@@ -150,6 +123,8 @@
 				}
 
 				this._videoIndex = currentIndex;
+				var id = this._videoContextList[this._videoIndex].id
+				const video = document.getElementById(`${id}`)
 
 				setTimeout(() => {
 					this.updateVideo(isNext);
@@ -176,9 +151,9 @@
 			updateVideo(isNext) {
 				this.$set(this.videoList[this._videoIndex], 'src', this.videoDataList[this._videoDataIndex].src);
 				this.$set(this.videoList[this.getNextIndex(isNext)], 'src', this.videoDataList[this.getNextDataIndex(isNext)].src);
-				
+
 				setTimeout(() => {
-					this._videoContextList[this._videoIndex].hideStatusBar();
+					this._videoContextList[this._videoIndex].hideStatusBar(); //隐藏状态栏，仅在iOS全屏下有效
 					this._videoContextList[this._videoIndex].play();
 				}, 200);
 				console.log("v:" + this._videoIndex + " d:" + this._videoDataIndex + "; next v:" + this.getNextIndex(
@@ -187,6 +162,9 @@
 			love(item) {
 				item.love_num += 1
 				this.isactive = !this.isactive
+				uni.showToast({
+					title: '点击点赞'
+				});
 			},
 			comm() {
 				uni.showToast({
@@ -236,8 +214,10 @@
 		height: 100vh;
 		z-index: 0;
 	}
-	cover-view,cover-image {
-	  display: inline-block;
+
+	cover-view,
+	cover-image {
+		display: inline-block;
 	}
 
 	.video-image {
@@ -262,7 +242,7 @@
 	.video-num {
 		text-align: center;
 		position: relative;
-		bottom: 10px;
+		bottom: 5px;
 		font-size: 14px;
 		font-weight: bold;
 		color: #FFFFFF;
