@@ -33,11 +33,23 @@
 			</swiper-item>
 		</swiper>
 		<cover-view class="nav_b">
-			<view @click="navCurrent(1)" class="nav_f" :class="{current_nav_f: current_nav==1 }">首页</view>
-			<view @click="navCurrent(2)" class="nav_f" :class="{current_nav_f: current_nav==2 }">朋友</view>
+			<view @click="navCurrent(1)" class="nav_f" >
+				<text>首页</text>
+				<view :class="{current_nav_f: current_nav==1 }"></view>
+			</view>
+			<view @click="navCurrent(2)" class="nav_f" >
+				<text>朋友</text>
+				<view :class="{current_nav_f: current_nav==2 }"></view>
+			</view>
 			<uni-icons @click="navAdd()" class="nav_f" type="plus-filled" color="#ffffff" size="30"/>
-			<view @click="navCurrent(3)" class="nav_f" :class="{current_nav_f: current_nav==3 }">消息</view>
-			<view @click="navCurrent(4)" class="nav_f":class="{current_nav_f: current_nav==4 }">我的</view>
+			<view @click="navCurrent(3)" class="nav_f" >
+				<text>消息</text>
+				<view :class="{current_nav_f: current_nav==3 }"></view>
+			</view>
+			<view @click="navCurrent(4)" class="nav_f" >
+				<text>我的</text>
+				<view :class="{current_nav_f: current_nav==4 }"></view>
+			</view>
 		</cover-view>
 	</view>
 </template>
@@ -200,7 +212,7 @@
 	}
 </script>
 
-<style>
+<style lang="scss" scoped>
 	/* #ifndef APP-PLUS */
 	page {
 		width: 100%;
@@ -296,9 +308,14 @@
 		font-weight: bold;
 	}
 	.nav_f{
-		margin: 0 auto; 
+		text-align: center;
+		width: 20%;
 	}
-	.current_nav_f{
-		border-bottom: #fff solid 3px;
-		}
+	.current_nav_f {
+		position: fixed;
+		bottom: 0;
+		width: 10vw;
+		margin: 0 5vw;
+	  border-bottom: #fff solid 3px;
+	}
 </style>
