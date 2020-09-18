@@ -32,12 +32,20 @@
 				</video>
 			</swiper-item>
 		</swiper>
+		<cover-view class="nav_b">
+			<view @click="navCurrent(1)" class="nav_f" :class="{current_nav_f: current_nav==1 }">首页</view>
+			<view @click="navCurrent(2)" class="nav_f" :class="{current_nav_f: current_nav==2 }">朋友</view>
+			<uni-icons @click="navAdd()" class="nav_f" type="plus-filled" color="#ffffff" size="30"/>
+			<view @click="navCurrent(3)" class="nav_f" :class="{current_nav_f: current_nav==3 }">消息</view>
+			<view @click="navCurrent(4)" class="nav_f":class="{current_nav_f: current_nav==4 }">我的</view>
+		</cover-view>
 	</view>
 </template>
 <script>
 	export default {
 		data() {
 			return {
+				current_nav:1,
 				isactive: false,
 				circular: true,
 				videoList: [],
@@ -49,6 +57,18 @@
 			this.getVideoData();
 		},
 		methods: {
+			navCurrent(index){
+				this.current_nav = index
+				index === 1 ? uni.showToast({title: '点击首页'}) : '';
+				index === 2 ? uni.showToast({title: '点击朋友'}) : '';
+				index === 3 ? uni.showToast({title: '点击消息'}) : '';
+				index === 4 ? uni.showToast({title: '点击我的'}) : '';
+			},
+			navAdd(){
+				uni.showToast({
+					title: '点击+'
+				});
+			},
 			init() {
 				this._videoIndex = 0;
 				this._videoContextList = [];
@@ -66,7 +86,7 @@
 			},
 			getVideoData() {
 				uni.showLoading({
-					title: '加载中...'
+					title: ''
 				})
 				uniCloud.callFunction({
 					name: 'get'
@@ -233,8 +253,7 @@
 
 	.video-love {
 		position: fixed;
-		height: 80px;
-		bottom: 46vh;
+		bottom: 45vh;
 		right: 15px;
 		z-index: 100;
 	}
@@ -251,7 +270,6 @@
 
 	.video-comm {
 		position: fixed;
-		height: 80px;
 		bottom: 32vh;
 		right: 15px;
 		z-index: 100;
@@ -259,9 +277,28 @@
 
 	.video-redo {
 		position: fixed;
-		height: 80px;
 		bottom: 19vh;
 		right: 15px;
 		z-index: 100;
 	}
+	
+	.nav_b{
+		border-top: #888888 solid 1px;
+		width: 100%;
+		position: fixed;
+		bottom: 0;
+		left: 0;
+		display: flex;
+		height: 45px;
+		line-height: 45px;
+		color: #FFFFFF;
+		font-size: 16px;
+		font-weight: bold;
+	}
+	.nav_f{
+		margin: 0 auto; 
+	}
+	.current_nav_f{
+		border-bottom: #fff solid 3px;
+		}
 </style>
