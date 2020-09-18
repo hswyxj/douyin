@@ -16,22 +16,24 @@
 				x5-video-player-type="h5" 
 				x5-video-player-fullscreen=""
 				x5-video-orientation="portraint">
-					<cover-image :id="item.id+'img'" :src="item.avatar_img" class="video-image"></cover-image>
-					<cover-view class="video-love" @click="love(item)">
-						<uni-icons type="heart-filled" :color="isactive==true?'#f44336':'#ffffff'" size="55" />
-						<view class="video-num">{{item.love_num}}</view>
-					</cover-view>
-					<cover-view class="video-comm" @click="comm">
-						<uni-icons type="chat-filled" color="#ffffff" size="50" />
-						<view class="video-num">{{item.comm_num}}</view>
-					</cover-view>
-					<cover-view class="video-redo" @click="redo">
-						<uni-icons type="redo-filled" color="#ffffff" size="50" />
-						<view class="video-num">{{item.redo_num}}</view>
-					</cover-view>
 				</video>
 			</swiper-item>
 		</swiper>
+		<cover-view>
+			<cover-image  :src="avatar_img" class="video-image"></cover-image>
+			<cover-view class="video-love" @click="love()">
+				<uni-icons type="heart-filled" :color="isactive==true?'#f44336':'#ffffff'" size="55" />
+				<view class="video-num">{{love_num}}</view>
+			</cover-view>
+			<cover-view class="video-comm" @click="comm">
+				<uni-icons type="chat-filled" color="#ffffff" size="50" />
+				<view class="video-num">{{comm_num}}</view>
+			</cover-view>
+			<cover-view class="video-redo" @click="redo">
+				<uni-icons type="redo-filled" color="#ffffff" size="50" />
+				<view class="video-num">{{redo_num}}</view>
+			</cover-view>
+		</cover-view>
 		<cover-view class="nav_b">
 			<view @click="navCurrent(1)" class="nav_f" >
 				<text>首页</text>
@@ -57,6 +59,10 @@
 	export default {
 		data() {
 			return {
+				avatar_img:'',
+				love_num:0,
+				comm_num:0,
+				redo_num:0,
 				current_nav:1,
 				isactive: false,
 				circular: true,
@@ -88,6 +94,10 @@
 					this._videoContextList.push(uni.createVideoContext('video' + i, this));
 				}
 				this._videoDataIndex = 0;
+				this.avatar_img = this.videoList[this._videoDataIndex].avatar_img
+				this.love_num = this.videoList[this._videoDataIndex].love_num
+				this.comm_num = this.videoList[this._videoDataIndex].comm_num
+				this.redo_num = this.videoList[this._videoDataIndex].redo_num
 			},
 			videoplay(index) {
 				const id = this._videoContextList[index].id
@@ -181,18 +191,22 @@
 				return index;
 			},
 			updateVideo(isNext) {
+				this.avatar_img = this.videoList[this._videoIndex].avatar_img
+				this.love_num = this.videoList[this._videoIndex].love_num
+				this.comm_num = this.videoList[this._videoIndex].comm_num
+				this.redo_num = this.videoList[this._videoIndex].redo_num
 				this.$set(this.videoList[this._videoIndex], 'src', this.videoDataList[this._videoDataIndex].src);
 				this.$set(this.videoList[this.getNextIndex(isNext)], 'src', this.videoDataList[this.getNextDataIndex(isNext)].src);
-
+        
 				setTimeout(() => {
-					this._videoContextList[this._videoIndex].hideStatusBar(); //隐藏状态栏，仅在iOS全屏下有效
+					// this._videoContextList[this._videoIndex].hideStatusBar(); //隐藏状态栏，仅在iOS全屏下有效
 					this._videoContextList[this._videoIndex].play();
 				}, 200);
 				console.log("v:" + this._videoIndex + " d:" + this._videoDataIndex + "; next v:" + this.getNextIndex(
 					isNext) + " next d:" + this.getNextDataIndex(isNext));
 			},
-			love(item) {
-				item.love_num += 1
+			love() {
+				!this.isactive ? this.love_num += 1 : this.love_num -=1
 				this.isactive = !this.isactive
 				uni.showToast({
 					title: '点击点赞'
